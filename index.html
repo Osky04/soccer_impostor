@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentiroso Futbolero</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Configuración -->
+        <div id="setup-screen" class="screen active">
+            <header>
+                <h1>Impostor Futbolero</h1>
+                <p>Añade de 3 a 15 jugadores para empezar la partida.</p>
+            </header>
+            <main>
+                <div class="add-player-form">
+                    <input type="text" id="player-name-input" placeholder="Nombre del jugador" maxlength="20">
+                    <button id="add-player-btn">Añadir</button>
+                </div>
+                <ul id="player-list">
+                    <!-- Jugadores añadidos aparecerán aquí -->
+                </ul>
+                <div class="impostor-selector">
+                    <label>Número de Impostores</label>
+                    <div class="count-control">
+                        <button id="decrease-impostors" class="control-btn" disabled>-</button>
+                        <span id="impostor-count">1</span>
+                        <button id="increase-impostors" class="control-btn" disabled>+</button>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <button id="start-game-btn" disabled>¡Empezar a Jugar!</button>
+            </footer>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="game-screen" class="screen">
+            <header>
+                <h2>Toca tu tarjeta para ver tu rol</h2>
+                <p id="game-instructions">Que nadie más vea tu rol. ¡Mantenlo en secreto!</p>
+            </header>
+            <main>
+                <div id="cards-container">
+                    <!-- Las tarjetas de los jugadores se generarán aquí -->
+                </div>
+            </main>
+            <footer>
+                <button id="restart-btn">
+                    <img src="whistle.png" alt="Reiniciar">
+                    Nueva Partida
+                </button>
+            </footer>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
