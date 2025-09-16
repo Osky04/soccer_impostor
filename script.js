@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let players = [];
     let impostorCount = 1;
+    let lastInnocentName = null; // Variable to track the last used football player
+    let lastImpostors = []; // Variable to track the last impostors
 
     // --- Lógica de Configuración ---
 
@@ -81,6 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (name && !players.includes(name)) {
             players.push(name);
             playerNameInput.value = '';
+            lastImpostors = []; // Reset impostor history if the player list changes
             updatePlayerList();
         } else if (players.includes(name)) {
             alert('¡Ese jugador ya está en la lista!');
@@ -90,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function removePlayer(indexToRemove) {
         players = players.filter((_, index) => index !== indexToRemove);
+        lastImpostors = []; // Reset impostor history if the player list changes
         updatePlayerList();
     }
 
@@ -137,17 +141,73 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function assignRoles(playerNames, numImpostors) {
         const footballPlayers = [
-            'Lionel Messi', 'Cristiano Ronaldo', 'Neymar Jr.', 'Kylian Mbappé', 'Diego Maradona', 
-            'Pelé', 'Zinedine Zidane', 'Johan Cruyff', 'Ronaldinho', 'Ronaldo Nazário',
-            'Andrés Iniesta', 'Xavi Hernández', 'Franz Beckenbauer', 'Alfredo Di Stéfano',
-            'Michel Platini', 'Gerd Müller', 'Paolo Maldini', 'Franco Baresi', 'Zlatan Ibrahimović',
-            'Thierry Henry', 'Karim Benzema', 'Luka Modrić', 'Kevin De Bruyne', 'Mohamed Salah',
-            'Sadio Mané', 'Robert Lewandowski', 'Erling Haaland', 'Vini Jr.', 'Jude Bellingham'
+            // --- 20 Jugadores Colombianos Emblemáticos ---
+            'Carlos Valderrama', 'Radamel Falcao', 'James Rodríguez', 'Faustino Asprilla', 'René Higuita', 
+            'Freddy Rincón', 'Iván Córdoba', 'Mario Yepes', 'Juan Cuadrado', 'Luis Díaz',
+            'David Ospina', 'Arnoldo Iguarán', 'Willington Ortiz', 'Carlos Bacca', 'Jackson Martínez',
+            'Teófilo Gutiérrez', 'Faryd Mondragón', 'Leonel Álvarez', 'Andrés Escobar', 'Adolfo Valencia',
+
+            // --- 200 Jugadores Más Conocidos del Mundo (Retirados y Actuales) ---
+            // Porteros
+            'Lev Yashin', 'Gianluigi Buffon', 'Iker Casillas', 'Manuel Neuer', 'Oliver Kahn', 
+            'Peter Schmeichel', 'Dino Zoff', 'Edwin van der Sar', 'Petr Čech', 'Thibaut Courtois', 
+            'Alisson Becker', 'Keylor Navas',
+
+            // Defensas
+            'Pelé', // A menudo listado como delantero, pero su leyenda trasciende posiciones
+            'Franz Beckenbauer', 'Paolo Maldini', 'Franco Baresi', 'Bobby Moore', 'Cafu', 
+            'Roberto Carlos', 'Carles Puyol', 'Fabio Cannavaro', 'Alessandro Nesta', 'Sergio Ramos', 
+            'Javier Zanetti', 'Lilian Thuram', 'Rio Ferdinand', 'John Terry', 'Nemanja Vidić', 
+            'Gerard Piqué', 'Dani Alves', 'Marcelo', 'Thiago Silva', 'Virgil van Dijk', 
+            'Giorgio Chiellini', 'Philipp Lahm', 'Ashley Cole', 'Raphaël Varane', 'David Alaba',
+
+            // Centrocampistas
+            'Diego Maradona', 'Johan Cruyff', 'Zinedine Zidane', 'Alfredo Di Stéfano', 'Michel Platini', 
+            'Xavi Hernández', 'Andrés Iniesta', 'Luka Modrić', 'Andrea Pirlo', 'Paul Scholes', 
+            'Steven Gerrard', 'Frank Lampard', 'Kaká', 'Lothar Matthäus', 'Zico', 
+            'Sócrates', 'Patrick Vieira', 'Roy Keane', 'Kevin De Bruyne', 'Toni Kroos', 
+            'N\'Golo Kanté', 'Ryan Giggs', 'David Beckham', 'Claude Makélélé', 'Edgar Davids', 
+            'Pavel Nedvěd', 'Gheorghe Hagi', 'Luis Figo', 'Rivaldo', 'Juan Román Riquelme', 
+            'Cesc Fàbregas', 'Sergio Busquets', 'Xabi Alonso', 'Bastian Schweinsteiger', 'Arjen Robben', 
+            'Franck Ribéry', 'Wesley Sneijder', 'David Silva', 'Yaya Touré', 'Eden Hazard', 
+            'Mesut Özil', 'Ángel Di María', 'Paul Pogba', 'Bruno Fernandes', 'Casemiro', 
+            'Jude Bellingham', 'Pedri', 'Gavi', 'Thomas Müller', 'Santi Cazorla',
+
+            // Delanteros
+            'Lionel Messi', 'Cristiano Ronaldo', 'Ronaldo Nazário', 'Ronaldinho', 'Ferenc Puskás', 
+            'Gerd Müller', 'Eusébio', 'Marco van Basten', 'Thierry Henry', 'Gabriel Batistuta', 
+            'Romário', 'Dennis Bergkamp', 'Raúl González', 'Andriy Shevchenko', 'Didier Drogba',
+            'Samuel Eto\'o', 'Zlatan Ibrahimović', 'Wayne Rooney', 'Luis Suárez', 'Robert Lewandowski', 
+            'Karim Benzema', 'Kylian Mbappé', 'Erling Haaland', 'Neymar Jr.', 'Mohamed Salah', 
+            'Sadio Mané', 'Vini Jr.', 'Harry Kane', 'Antoine Griezmann', 'Son Heung-min',
+            'George Best', 'Kenny Dalglish', 'Éric Cantona', 'Alan Shearer', 'Michael Owen',
+            'Francesco Totti', 'Alessandro Del Piero', 'Roberto Baggio', 'Filippo Inzaghi', 'Ruud van Nistelrooy',
+            'Robin van Persie', 'David Villa', 'Fernando Torres', 'Sergio Agüero', 'Edinson Cavani',
+            'Diego Forlán', 'Hristo Stoichkov', 'George Weah', 'Adriano', 'Carlos Tevez'
         ];
         
-        const innocentName = footballPlayers[Math.floor(Math.random() * footballPlayers.length)];
+        let innocentName;
+        do {
+            innocentName = footballPlayers[Math.floor(Math.random() * footballPlayers.length)];
+        } while (innocentName === lastInnocentName && footballPlayers.length > 1);
+        lastInnocentName = innocentName;
         
-        const shuffledPlayers = [...playerNames].sort(() => 0.5 - Math.random());
+        let shuffledPlayers;
+        let newImpostors;
+        let attempts = 0;
+        const canChangeImpostors = playerNames.length > numImpostors && lastImpostors.length > 0;
+
+        do {
+            shuffledPlayers = [...playerNames].sort(() => 0.5 - Math.random());
+            newImpostors = shuffledPlayers.slice(0, numImpostors).sort();
+            attempts++;
+        } while (
+            canChangeImpostors &&
+            JSON.stringify(newImpostors) === JSON.stringify(lastImpostors.sort()) &&
+            attempts < 10 // Safety break to prevent infinite loops
+        );
+
+        lastImpostors = newImpostors.slice(); // Store a copy of the new impostors
         
         const playersWithRoles = shuffledPlayers.map((name, index) => ({
             name,
@@ -190,7 +250,22 @@ document.addEventListener('DOMContentLoaded', () => {
             card.appendChild(cardInner);
 
             card.addEventListener('click', () => {
+                // No permitir voltear si ya hay un timeout pendiente para evitar bugs
+                if (card.dataset.flipping === 'true') return;
+
                 card.classList.toggle('flipped');
+
+                // Si la carta se ha volteado para mostrar el rol
+                if (card.classList.contains('flipped')) {
+                    card.dataset.flipping = 'true'; // Marcar que hay un flip en proceso
+                    setTimeout(() => {
+                        card.classList.remove('flipped');
+                        // Usamos otro timeout corto para que la animación termine antes de poder volver a clickear
+                        setTimeout(() => {
+                           delete card.dataset.flipping;
+                        }, 300); // Debe ser menor a la duración de la animación
+                    }, 1800); // Reducido de 3000ms a 1800ms
+                }
             });
 
             cardsContainer.appendChild(card);
