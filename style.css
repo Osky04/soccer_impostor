@@ -155,6 +155,7 @@ button:disabled {
     background-color: #555;
     color: #888;
     cursor: not-allowed;
+    opacity: 0.5;
 }
 
 #player-list {
@@ -238,13 +239,30 @@ button:disabled {
     opacity: 0.5;
 }
 
-#start-game-btn, #restart-btn {
+#start-game-btn, #restart-game-btn {
     width: 100%;
     padding: 1rem;
     font-size: 1.2rem;
 }
 
+#who-starts-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+    background-color: var(--innocent-color);
+}
+
+#who-starts-btn:hover {
+    background-color: #42A5F5;
+}
+
 #restart-btn img {
+    width: 24px;
+    height: 24px;
+}
+
+#start-game-btn img, #restart-game-btn img {
     width: 24px;
     height: 24px;
 }
@@ -254,6 +272,19 @@ button:disabled {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
     gap: 1rem;
+}
+
+.start-info-box {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 2px solid var(--primary-color);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem; /* Added margin to separate from the button below */
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--secondary-color);
+    animation: fadeIn 0.5s;
 }
 
 .card {

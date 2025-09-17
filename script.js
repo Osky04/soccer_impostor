@@ -12,13 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Elementos de la pantalla de juego
     const gameScreen = document.getElementById('game-screen');
     const cardsContainer = document.getElementById('cards-container');
-    const restartBtn = document.getElementById('restart-btn');
+    const restartGameBtn = document.getElementById('restart-game-btn');
+    const whoStartsBtn = document.getElementById('who-starts-btn');
     const gameInstructions = document.getElementById('game-instructions');
+    const startInfo = document.getElementById('start-info');
 
     let players = [];
     let impostorCount = 1;
     let lastInnocentName = null; // Variable to track the last used football player
     let lastImpostors = []; // Variable to track the last impostors
+    let lastStartingPlayer = null; // Variable to track who started last
 
     // --- Lógica de Configuración ---
 
@@ -59,7 +62,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Habilitar el botón de inicio solo si hay entre 3 y 15 jugadores
-        startGameBtn.disabled = players.length < 3;
+        if (startGameBtn) {
+            startGameBtn.disabled = players.length < 3;
+        }
 
         // Deshabilitar el formulario de añadir jugador si se alcanza el máximo
         const maxPlayersReached = players.length >= 15;
@@ -84,6 +89,7 @@ document.addEventListener('DOMContentLoaded', () => {
             players.push(name);
             playerNameInput.value = '';
             lastImpostors = []; // Reset impostor history if the player list changes
+            lastStartingPlayer = null; // Reset last starting player
             updatePlayerList();
         } else if (players.includes(name)) {
             alert('¡Ese jugador ya está en la lista!');
@@ -94,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function removePlayer(indexToRemove) {
         players = players.filter((_, index) => index !== indexToRemove);
         lastImpostors = []; // Reset impostor history if the player list changes
+        lastStartingPlayer = null; // Reset last starting player
         updatePlayerList();
     }
 
@@ -119,7 +126,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    startGameBtn.addEventListener('click', startGame);
+    if (startGameBtn) {
+        startGameBtn.addEventListener('click', startGame);
+    }
 
     // --- Lógica del Juego ---
 
@@ -130,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Actualizar instrucciones
         const impostorText = impostorCount > 1 ? 'los impostores' : 'el impostor';
         gameInstructions.textContent = `El jugador a nombrar es ${gameData.innocentName}. ¡Descubrid a ${impostorText}!`;
+        startInfo.style.display = 'none'; // Ocultar al iniciar
 
         // Crear las tarjetas
         createCards(gameData.playersWithRoles);
@@ -272,6 +282,26 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // --- Lógica para decidir quién inicia ---
+    function whoStarts() {
+        if (players.length === 0) return;
+
+        // Intentar no repetir el jugador que inició la última vez
+        let possibleStarters = players.filter(p => p !== lastStartingPlayer);
+        if (possibleStarters.length === 0) {
+            possibleStarters = players; // Fallback si solo hay un jugador o si no se puede evitar la repetición
+        }
+
+        const startingPlayer = possibleStarters[Math.floor(Math.random() * possibleStarters.length)];
+        lastStartingPlayer = startingPlayer;
+
+        const directions = ['la izquierda', 'la derecha'];
+        const direction = directions[Math.floor(Math.random() * directions.length)];
+
+        startInfo.textContent = `¡Empieza ${startingPlayer}! El juego va hacia ${direction}.`;
+        startInfo.style.display = 'block';
+    }
+
     // --- Lógica de Reinicio ---
 
     function restartGame() {
@@ -280,8 +310,16 @@ document.addEventListener('DOMContentLoaded', () => {
         // updatePlayerList();
         gameScreen.classList.remove('active');
         setupScreen.classList.add('active');
+        // Reset instructions text to its default state for the next round's assignments
         gameInstructions.textContent = 'Que nadie más vea tu rol. ¡Mantenlo en secreto!';
+        lastStartingPlayer = null; // Reset so the next round can pick anyone first
     }
 
-    restartBtn.addEventListener('click', restartGame);
+    if (restartGameBtn) {
+        restartGameBtn.addEventListener('click', restartGame);
+    }
+    
+    if (whoStartsBtn) {
+        whoStartsBtn.addEventListener('click', whoStarts);
+    }
 });
