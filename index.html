@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mentiroso Futbolero</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Module preload for better module loading robustness -->
+    <link rel="modulepreload" href="./js/state.js">
+    <link rel="modulepreload" href="./js/ui.js">
+    <link rel="modulepreload" href="./js/logic.js">
+    <link rel="modulepreload" href="./js/constants.js">
+</head>
+<body>
+    <div id="app">
+        <!-- Pantalla de Configuración -->
+        <div id="setup-screen" class="screen active">
+            <header>
+                <h1>Impostor Futbolero</h1>
+                <p>Añade de 3 a 15 jugadores para empezar la partida.</p>
+            </header>
+            <main>
+                <div class="add-player-form">
+                    <input type="text" id="player-name-input" placeholder="Nombre del jugador" maxlength="20">
+                    <button id="add-player-btn">+</button>
+                </div>
+                <ul id="player-list">
+                    <!-- Jugadores añadidos aparecerán aquí -->
+                </ul>
+                <div class="impostor-selector">
+                    <label>Número de Impostores</label>
+                    <div class="count-control">
+                        <button id="decrease-impostors" class="control-btn" disabled>-</button>
+                        <span id="impostor-count">1</span>
+                        <button id="increase-impostors" class="control-btn" disabled>+</button>
+                    </div>
+                </div>
+            </main>
+            <footer>
+                <button id="start-game-btn" disabled>
+                    ¡Empezar a Jugar!
+                </button>
+                <div class="credits">By: Osky</div>
+            </footer>
+        </div>
+
+        <!-- Pantalla de Juego -->
+        <div id="game-screen" class="screen">
+            <header>
+                <h2>Toca tu tarjeta para ver tu rol</h2>
+                <p id="game-instructions">Que nadie más vea tu rol. ¡Mantenlo en secreto!</p>
+            </header>
+            <main>
+                <div id="cards-container">
+                    <!-- Las tarjetas de los jugadores se generarán aquí -->
+                </div>
+            </main>
+            <footer>
+                <button id="who-starts-btn">¿Quién inicia?</button>
+                <div id="start-info" class="start-info-box" style="display: none;"></div>
+                <button id="vote-btn">Votar</button>
+            </footer>
+        </div>
+
+        <!-- Pantalla de Votación -->
+        <div id="voting-screen" class="screen">
+            <header>
+                <h2>Vota por el Impostor</h2>
+                <p>Cada jugador debe votar una vez. El jugador con más votos será expulsado automáticamente.</p>
+            </header>
+            <main>
+                <div id="vote-list-container">
+                    <!-- Los jugadores para votar se generarán aquí -->
+                </div>
+            </main>
+            <footer>
+                <div id="vote-progress" class="vote-progress-box" style="display: none;">0/0 Votos</div>
+            </footer>
+        </div>
+
+        <!-- Pantalla de Resultados -->
+        <div id="results-screen" class="screen">
+            <header>
+                <h2>Resultado de la Votación</h2>
+            </header>
+            <main>
+                <div id="result-message" class="result-box">
+                    <!-- El mensaje del resultado aparecerá aquí -->
+                </div>
+            </main>
+            <footer>
+                 <div id="start-info-results" class="start-info-box" style="display: none;"></div>
+                 <button id="next-round-btn" style="display: none;">Siguiente Ronda</button>
+                 <button id="new-game-btn" style="display: none;">Nueva Partida</button>
+            </footer>
+        </div>
+    </div>
+    <script type="importmap">
+    {
+        "imports": {
+            "./js/state.js": "./js/state.js",
+            "./js/ui.js": "./js/ui.js",
+            "./js/logic.js": "./js/logic.js",
+            "./js/constants.js": "./js/constants.js"
+        }
+    }
+    </script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
